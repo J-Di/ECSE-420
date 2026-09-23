@@ -6,7 +6,7 @@ import ca.mcgill.ecse420.a1.MatrixMultiplication;
 // DISCLAIMER: AI was used to help generate these test cases
 public class Q1_tests {
 
-    static double eps = 1e-6;
+    static double eps = 1e-9;
 
     // Function used to see if two matrices are equal manually
     private static boolean matricesEqual(double[][] x, double[][] y) {
@@ -136,7 +136,7 @@ public class Q1_tests {
 
     // Test cases for parallel solving only
     public static void testParallel() {
-            // Test 1: small hand-computed 2x2 case
+        // Test 1: small hand-computed 2x2 case
         double[][] a1 = {{1, 2}, {3, 4}};
         double[][] b1 = {{5, 6}, {7, 8}};
         double[][] expected1 = {{19, 22}, {43, 50}};
@@ -185,7 +185,7 @@ public class Q1_tests {
         check("1x5 times 5x1 (inner product)",
             MatrixMultiplication.parallelMultiplyMatrix(a7, b7), expected7);
 
-        // Test 8: (4x1) x (1x3) -> 4x3, an outer product; many entries from one term each
+        // Test 8: (4x1) x (1x3) -> 4x3, an outer product;
         double[][] a8 = {{1}, {-2}, {3}, {4}};
         double[][] b8 = {{5, -6, 7}};
         double[][] expected8 = {{5, -6, 7}, {-10, 12, -14}, {15, -18, 21}, {20, -24, 28}};
@@ -228,5 +228,9 @@ public class Q1_tests {
     }
 
     
-    
+    public static void testSequentialAgainstParallel(){
+
+
+        
+    }
 }
