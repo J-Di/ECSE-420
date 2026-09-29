@@ -4,7 +4,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import Assignment1.test.Q1_tests;
+import ca.mcgill.ecse420.a1.test.Q1_tests;
 
 public class MatrixMultiplication {
 	
