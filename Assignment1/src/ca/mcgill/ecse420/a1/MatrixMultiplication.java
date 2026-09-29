@@ -15,19 +15,15 @@ public class MatrixMultiplication {
 		
 		//  Different tests can be commented out / uncommented and ran below:
 		
-		// Direct testing method: Generate two random matrices, same size
-		System.out.println("Manual Tests\n");
-		double[][] a = generateRandomMatrix(MATRIX_SIZE, MATRIX_SIZE);
-		double[][] b = generateRandomMatrix(MATRIX_SIZE, MATRIX_SIZE);
-		printMatrix(sequentialMultiplyMatrix(a, b));
-		printMatrix(parallelMultiplyMatrix(a, b));
-		
-		System.out.println("Test Suite Tests\n");
-		// Testing using test suite
-		Q1_tests.testSequential();
-		Q1_tests.testParallel();
+		// Direct testing method for manual testing:
+		// runBasicTest();
 
-		// Sweeping tests for 1.4 and 1.5
+		// Tests from the test suite in the test directory:
+		// System.out.println("Test Suite Tests\n");
+		// Q1_tests.testSequential();
+		// Q1_tests.testParallel();
+
+		// Sweeping tests for 1.4 and 1.5:
 		//System.out.println("Sweeping Tests Start\n");
 		// runThreadSweep(4000);
 		// runSizeSweep(NUMBER_THREADS);
@@ -237,6 +233,7 @@ public class MatrixMultiplication {
 			}
 			System.out.println(" ]"); // end border
 		}
+		System.out.println("\n");
 	}	
 	
 	/**
@@ -287,5 +284,20 @@ public class MatrixMultiplication {
 			}
 		}
 
+		// Runs a basic test that creates random matrices a and b, and computes sequential and parallel 
+		// solver results, printing for manual inspection
+		public static void runBasicTest() {
+			System.out.println("Manual Tests\n");
+			double[][] a = generateRandomMatrix(MATRIX_SIZE, MATRIX_SIZE);
+			double[][] b = generateRandomMatrix(MATRIX_SIZE, MATRIX_SIZE);
+			System.out.println("Matrix A: \n");
+			printMatrix(a);
+			System.out.println("Matrix B: \n");
+			printMatrix(b);
+			System.out.println("Sequential Solution: \n");
+			printMatrix(sequentialMultiplyMatrix(a, b));
+			System.out.println("Parallel Solution: \n");
+			printMatrix(parallelMultiplyMatrix(a, b));
+		}
 
 }
