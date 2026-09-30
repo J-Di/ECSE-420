@@ -4,6 +4,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+// Uncomment the followiing to run tests from Q1_tests 
+// import ca.mcgill.ecse420.a1.test.Q1_tests;
 
 
 public class MatrixMultiplication {
@@ -18,8 +20,7 @@ public class MatrixMultiplication {
 		// Direct testing method for manual testing:
 		// runBasicTest();
 
-		// Tests from the test suite in the test directory:
-		// import ca.mcgill.ecse420.a1.test.Q1_tests;
+		// Tests from the test suite in the test directory. TO DO THIS, UNCOMMENT LINE 8
 		// System.out.println("Test Suite Tests\n");
 		// Q1_tests.testSequential();
 		// Q1_tests.testParallel();
