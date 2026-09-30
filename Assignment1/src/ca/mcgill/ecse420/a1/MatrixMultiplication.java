@@ -4,7 +4,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import ca.mcgill.ecse420.a1.test.Q1_tests;
+
 
 public class MatrixMultiplication {
 	
@@ -19,6 +19,7 @@ public class MatrixMultiplication {
 		// runBasicTest();
 
 		// Tests from the test suite in the test directory:
+		// import ca.mcgill.ecse420.a1.test.Q1_tests;
 		// System.out.println("Test Suite Tests\n");
 		// Q1_tests.testSequential();
 		// Q1_tests.testParallel();
