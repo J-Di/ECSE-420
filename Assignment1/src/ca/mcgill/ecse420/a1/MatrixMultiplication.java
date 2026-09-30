@@ -4,7 +4,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import Assignment1.test.Q1_tests;
+// Uncomment the followiing to run tests from Q1_tests 
+// import ca.mcgill.ecse420.a1.test.Q1_tests;
+
 
 public class MatrixMultiplication {
 	
@@ -15,19 +17,15 @@ public class MatrixMultiplication {
 		
 		//  Different tests can be commented out / uncommented and ran below:
 		
-		// Direct testing method: Generate two random matrices, same size
-		System.out.println("Manual Tests\n");
-		double[][] a = generateRandomMatrix(MATRIX_SIZE, MATRIX_SIZE);
-		double[][] b = generateRandomMatrix(MATRIX_SIZE, MATRIX_SIZE);
-		printMatrix(sequentialMultiplyMatrix(a, b));
-		printMatrix(parallelMultiplyMatrix(a, b));
-		
-		System.out.println("Test Suite Tests\n");
-		// Testing using test suite
-		Q1_tests.testSequential();
-		Q1_tests.testParallel();
+		// Direct testing method for manual testing:
+		// runBasicTest();
 
-		// Sweeping tests for 1.4 and 1.5
+		// Tests from the test suite in the test directory. TO DO THIS, UNCOMMENT LINE 8
+		// System.out.println("Test Suite Tests\n");
+		// Q1_tests.testSequential();
+		// Q1_tests.testParallel();
+
+		// Sweeping tests for 1.4 and 1.5:
 		//System.out.println("Sweeping Tests Start\n");
 		// runThreadSweep(4000);
 		// runSizeSweep(NUMBER_THREADS);
@@ -106,8 +104,9 @@ public class MatrixMultiplication {
 		// Create result matrix
 		double [][] result = new double[numRowA][numColB];
 
-		// Now solve in parallel, where the strategy used here is to create threads for each row of 
-		// the matrix, and have each compute their respective row and come together to form the solved matrix
+		// Now solve in parallel, where the strategy used here is to create threads for each row
+		//  of the matrix, and have each compute their respective row and come together to form 
+		// the solved matrix
 
 		//Create thread pool
 		ExecutorService executor = Executors.newFixedThreadPool(numThreads);
@@ -120,9 +119,10 @@ public class MatrixMultiplication {
 		 // Stop accepting tasks
 		executor.shutdown();
 		try {
-			executor.awaitTermination(1, TimeUnit.HOURS); // wait for all tasks to finish, with timeout
+			executor.awaitTermination(1, TimeUnit.HOURS); // wait for all tasks to finish,
+																   //  with timeout
 		} catch (InterruptedException e) {
-			executor.shutdownNow();             // Stop any tasks still running
+			executor.shutdownNow(); // Stop any tasks still running
 			throw new IllegalStateException("Matrix multiplication was interrupted", e);
 		}
 
@@ -144,16 +144,19 @@ public class MatrixMultiplication {
 	
 	/**
 	 * Question 1.3 from the assignment is here:
-	 * Returns a matrix of size 1x2 containing run times for sequential and parallel matrix multiplication methods respectively
+	 * Returns a matrix of size 1x2 containing run times for sequential and parallel matrix 
+	 * multiplication methods respectively
 	 * @param numRowA number of rows in A
 	 * @param numColA number of columns in A, and therefore rows in B
 	 * @param numRowB number of rows in B
 	 * @param numColB number of columns in B
 	 * @param numThreads number of threads
-	 * @param compileFirst If the two solvers must be ran first to compile, to make timings more accurate and comparable
+	 * @param compileFirst If the two solvers must be ran first to compile, to make timings more 
+	 * 																	accurate and comparable
 	 * @return times
 	 */
-	public static double [] getRunTimes (int numRowA, int numColA, int numRowB, int numColB, int numThreads, boolean compileFirst){
+	public static double [] getRunTimes (int numRowA, int numColA, int numRowB, 
+												int numColB, int numThreads, boolean compileFirst){
 
 		// Input Check
 		if (numColA != numRowB){
@@ -193,14 +196,17 @@ public class MatrixMultiplication {
 
 	/**
 	 * 	Overloaded function above, so that for multiple consecutive runs it does not take as long
-	 * Returns a matrix of size 1x2 containing run times for sequential and parallel matrix multiplication methods respectively
+	 * Returns a matrix of size 1x2 containing run times for sequential and parallel matrix 
+	 * 														multiplication methods respectively
 	 * @param numRows number of rows
 	 * @param numCols number of cols
 	 * @param numThreads number of threads
-	 * @param compileFirst If the two solvers must be ran first to compile, to make timings more accurate and comparable
+	 * @param compileFirst If the two solvers must be ran first to compile, to make timings more
+	 * 					   accurate and comparable
 	 * @return times
 	 */
-	public static double[] getRunTimes(int numRowA, int numColA, int numRowB, int numColB, int numThreads) {
+	public static double[] getRunTimes(int numRowA, int numColA, int numRowB,
+															 int numColB, int numThreads) {
 		return getRunTimes(numRowA, numColA, numRowB, numColB, numThreads, true);
 	}
 
@@ -237,6 +243,7 @@ public class MatrixMultiplication {
 			}
 			System.out.println(" ]"); // end border
 		}
+		System.out.println("\n");
 	}	
 	
 	/**
@@ -256,13 +263,16 @@ public class MatrixMultiplication {
 		getRunTimes(200, 200, 200, 200,1 );
 
 		//  table
-		System.out.printf("%-10s %16s %16s %10s%n","Threads", "Sequential (ms)", "Parallel (ms)", "Speedup");
+		System.out.printf("%-10s %16s %16s %10s%n",
+									"Threads", "Sequential (ms)", "Parallel (ms)", "Speedup");
 
 		// loup to get information
 		for (int i = 0; i < threadCounts.length; i++) {
-			results[i] = getRunTimes(matrixSize, matrixSize, matrixSize, matrixSize, threadCounts[i], false);
+			results[i] = getRunTimes(matrixSize, matrixSize, matrixSize, matrixSize,
+																threadCounts[i], false);
 			double speedup = results[i][0] / results[i][1];
-			System.out.printf("%-10d %16.2f %16.2f %9.3fx%n", threadCounts[i], results[i][0], results[i][1], speedup);
+			System.out.printf("%-10d %16.2f %16.2f %9.3fx%n", threadCounts[i], results[i][0],
+																	results[i][1], speedup);
 		}
 	}
 
@@ -274,18 +284,37 @@ public class MatrixMultiplication {
 			int[] sizes = {100, 200, 500, 1000, 2000, 3000, 4000};
 			double[][] results = new double[sizes.length][2];
 
-			System.out.println("Logical cores available: " + Runtime.getRuntime().availableProcessors());
+			System.out.println("Logical cores available: " +
+													 Runtime.getRuntime().availableProcessors());
 
 			// Compile step once
 			 getRunTimes(200, 200, 200, 200, numThreads);
 
 			// table
-			System.out.printf("%-10s %16s %16s %10s%n", "Size", "Sequential (ms)", "Parallel (ms)", "Speedup");
+			System.out.printf("%-10s %16s %16s %10s%n", "Size", "Sequential (ms)", "Parallel (ms)",
+																					 "Speedup");
 			for (int i = 0; i < sizes.length; i++) {
-				results[i] = getRunTimes(sizes[i], sizes[i], sizes[i], sizes[i], numThreads, false);
-				System.out.printf("%-10d %16.2f %16.2f %9.3fx%n", sizes[i], results[i][0], results[i][1], results[i][0] / results[i][1]);
+				results[i] = getRunTimes(sizes[i], sizes[i], sizes[i], sizes[i],
+																			 numThreads, false);
+				System.out.printf("%-10d %16.2f %16.2f %9.3fx%n", sizes[i], results[i][0],
+												 results[i][1], results[i][0] / results[i][1]);
 			}
 		}
 
+		// Runs a basic test that creates random matrices a and b, and computes sequential and parallel 
+		// solver results, printing for manual inspection
+		public static void runBasicTest() {
+			System.out.println("Manual Tests\n");
+			double[][] a = generateRandomMatrix(MATRIX_SIZE, MATRIX_SIZE);
+			double[][] b = generateRandomMatrix(MATRIX_SIZE, MATRIX_SIZE);
+			System.out.println("Matrix A: \n");
+			printMatrix(a);
+			System.out.println("Matrix B: \n");
+			printMatrix(b);
+			System.out.println("Sequential Solution: \n");
+			printMatrix(sequentialMultiplyMatrix(a, b));
+			System.out.println("Parallel Solution: \n");
+			printMatrix(parallelMultiplyMatrix(a, b));
+		}
 
 }

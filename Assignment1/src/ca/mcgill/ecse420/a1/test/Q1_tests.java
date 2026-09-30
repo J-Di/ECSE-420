@@ -1,4 +1,4 @@
-package Assignment1.test;
+package ca.mcgill.ecse420.a1.test;
 
 import ca.mcgill.ecse420.a1.MatrixMultiplication;
 
