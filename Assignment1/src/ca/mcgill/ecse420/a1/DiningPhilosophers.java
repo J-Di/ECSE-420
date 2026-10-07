@@ -58,16 +58,22 @@ public class DiningPhilosophers {
 		@Override
 		public void run() {
 
-				try {
+			try {
 
-					while (!Thread.currentThread().isInterrupted()) {
+				//Deadlock solution:
+				// Since each philosophere already has an ID between 0 and numberOfPhilosophers-1,
+				// we can use the ID to determine which chopstick to pick up first.
+				// Philosophers with even IDs pick up the left chopstick first, while philosophers with odd IDs pick up the right chopstick first.
+				while (!Thread.currentThread().isInterrupted()) {
 
-						//The philosopher thinks for a while, then becomes hungry and tries to pick up the chopsticks to eat
-						System.out.println("Philosopher " + id + " is thinking.");
-						Thread.sleep(200);
-						System.out.println("Philosopher " + id + " is hungry.");
+					//The philosopher thinks for a while, then becomes hungry and tries to pick up the chopsticks to eat
+					System.out.println("Philosopher " + id + " is thinking.");
+					Thread.sleep(200);
+					System.out.println("Philosopher " + id + " is hungry.");
 
-						// Each shared chopstick's monitor permits only one owner at a time.
+					// Each shared chopstick's monitor permits only one owner at a time.
+					if (id % 2 == 0) {
+						// Even-numbered philosophers pick up the left chopstick first.
 						synchronized (leftChopstick) {
 
 							System.out.println("Philosopher " + id + " picked up left chopstick.");
@@ -85,19 +91,35 @@ public class DiningPhilosophers {
 
 							System.out.println("Philosopher " + id + " put down right chopstick.");
 						}
-						
-						System.out.println("Philosopher " + id + " put down left chopstick.");
+					} else {
+						// Odd-numbered philosophers pick up the right chopstick first.
+						synchronized (rightChopstick) {
+
+							System.out.println("Philosopher " + id + " picked up right chopstick.");
+
+							// Sleep holds the right monitor to increase the chance of deadlock.
+							Thread.sleep(200);
+							System.out.println("Philosopher " + id + " is waiting for the left chopstick.");
+
+							synchronized (leftChopstick) {
+
+								System.out.println("Philosopher " + id + " picked up left chopstick.");
+								System.out.println("Philosopher " + id + " is eating.");
+								Thread.sleep(200);
+							}
+
+							System.out.println("Philosopher " + id + " put down left chopstick.");
+						}
+					
+						System.out.println("Philosopher " + id + " put down right chopstick.");
 					}
-
-				} catch (InterruptedException e) {
-
-					// Exiting synchronized blocks releases held monitors before reaching here.
-					Thread.currentThread().interrupt();
 				}
 
+			} catch (InterruptedException e) {
+
+				// Exiting synchronized blocks releases held monitors before reaching here.
+				Thread.currentThread().interrupt();
+			}
 		}
-
-
 	}
-
 }
