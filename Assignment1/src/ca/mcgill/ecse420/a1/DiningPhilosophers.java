@@ -2,6 +2,7 @@ package ca.mcgill.ecse420.a1;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Semaphore;
 
 public class DiningPhilosophers {
 
@@ -44,6 +45,10 @@ public class DiningPhilosophers {
 
 	}
 
+	// One fair permit gives queued philosophers turns without overtaking.
+	private static final Semaphore waiter = new Semaphore(1, true);
+
+
 	public static class Philosopher implements Runnable {
 
 		// Class Objects to represent the chopsticks and id
@@ -61,6 +66,40 @@ public class DiningPhilosophers {
 		@Override
 		public void run() {
 
+			try {
+				while (!Thread.currentThread().isInterrupted()) {
+					
+					//The philosopher thinks for a while, then becomes hungry and tries to pick up the chopsticks to eat
+					System.out.println("Philosopher " + id + " is thinking.");
+					Thread.sleep(200);
+					System.out.println("Philosopher " + id + " is hungry.");
+
+					// Wait without holding either chopstick. Acquire before the try,
+					// so interruption while waiting does not release an unowned permit.
+					waiter.acquire();
+					try {
+						synchronized (leftChopstick) {
+							System.out.println("Philosopher " + id + " picked up left chopstick.");
+							synchronized (rightChopstick) {
+								System.out.println("Philosopher " + id + " picked up right chopstick.");
+								System.out.println("Philosopher " + id + " is eating.");
+								Thread.sleep(200);
+							}
+							System.out.println("Philosopher " + id + " put down right chopstick.");
+						}
+						System.out.println("Philosopher " + id + " put down left chopstick.");
+					} finally {
+						// Release the permit even if eating is interrupted.
+						waiter.release();
+					}
+				}
+			} catch (InterruptedException e) {
+				// Leaving synchronized blocks releases any held chopstick monitors.
+				Thread.currentThread().interrupt();
+			}
+
+
+			/*
 			try {
 
 				// Deadlock solution:
@@ -123,6 +162,7 @@ public class DiningPhilosophers {
 				// Exiting synchronized blocks releases held monitors before reaching here.
 				Thread.currentThread().interrupt();
 			}
+			*/
 			
 			/*
 			The code below is the original code that can cause deadlock.
