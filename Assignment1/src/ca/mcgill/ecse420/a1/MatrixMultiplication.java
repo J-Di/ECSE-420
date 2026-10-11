@@ -31,7 +31,7 @@ public class MatrixMultiplication {
 		// runSizeSweep(NUMBER_THREADS);
 	}
 	
-	
+
 	/**
 	 * Returns the result of a sequential matrix multiplication
 	 * The two matrices are randomly generated
@@ -121,8 +121,14 @@ public class MatrixMultiplication {
 		 // Stop accepting tasks
 		executor.shutdown();
 		try {
-			executor.awaitTermination(1, TimeUnit.HOURS); // wait for all tasks to finish,
+			boolean finished = executor.awaitTermination(1, TimeUnit.HOURS); // wait for all tasks to finish,
 																   //  with timeout
+			if (!finished) {
+				executor.shutdownNow();
+				throw new IllegalStateException(
+					"Matrix multiplication timed out before all tasks completed");
+				}
+
 		} catch (InterruptedException e) {
 			executor.shutdownNow(); // Stop any tasks still running
 			throw new IllegalStateException("Matrix multiplication was interrupted", e);
