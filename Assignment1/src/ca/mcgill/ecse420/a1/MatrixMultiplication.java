@@ -31,6 +31,7 @@ public class MatrixMultiplication {
 		// runSizeSweep(NUMBER_THREADS);
 	}
 	
+	
 	/**
 	 * Returns the result of a sequential matrix multiplication
 	 * The two matrices are randomly generated
@@ -64,6 +65,7 @@ public class MatrixMultiplication {
 		}
 		return result;
 	}
+
 	
 	// Runnable function that each seperate thread will do (matrix multiplying one row)
 	// This function is used in the below parallel solving strategy
@@ -128,6 +130,7 @@ public class MatrixMultiplication {
 
 		return result;
 	}
+
 
 	/**
 	 * Returns the result of a concurrent matrix multiplication
@@ -227,6 +230,7 @@ public class MatrixMultiplication {
         return matrix;
     }
 	
+
 	// Print function to visualize the matrices
 	public static void printMatrix(double[][] matrix) { 
 		// Edge case check
@@ -246,6 +250,7 @@ public class MatrixMultiplication {
 		System.out.println("\n");
 	}	
 	
+
 	/**
 	 * Function to print out data for question 1.4
 	 * It is only designed for square matrices
@@ -275,6 +280,7 @@ public class MatrixMultiplication {
 																	results[i][1], speedup);
 		}
 	}
+
 
 	/**
 	 * Runs the matrix-size sweep for question 1.5 and prints results as a table and as CSV.
