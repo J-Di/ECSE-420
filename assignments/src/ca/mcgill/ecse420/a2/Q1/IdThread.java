@@ -1,4 +1,4 @@
-package ca.mcgill.ecse420.a2;
+package ca.mcgill.ecse420.a2.Q1;
 
 
 // A thread that carries an index in [0, n] for use by the lock implementations
