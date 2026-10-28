@@ -3,8 +3,8 @@ package ca.mcgill.ecse420.a2.Q1;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-// Test whetehr the filter lock provides n-thread mutual exclusion
-public class TestFilterLock {
+// Test whether the filter or bakery lock provides n-thread mutual exclusion
+public class TestMutualExclusion {
 
     private static final int ITERATIONS = 400; // critical sections per thread
     private static final int TRIALS = 3;       // Repeated runs per n
@@ -17,14 +17,24 @@ public class TestFilterLock {
 
     //Runs the test for n = 2 to 8 on the Filter lock
     public static void main(String[] args) throws InterruptedException {
-        // Run the test for thread numbers for 2 to 8
+
+        // Run FilterLock test for thread numbers for 2 to 8
         System.out.println("FilterLock tests");
+        int lockType = 0; // 0 for FilterLock, 1 for BakeryLock
         for (int n = 2; n <= 8; n++) {
-            runTrials(n, true);
+            runTrials(n, lockType);
         }
+
+        // Run BakeryLock test for thread numbers from 2 to
+        System.out.println("Bakery tests");
+        lockType = 1;
+        for (int n = 2; n <= 8; n++) {
+            runTrials(n, lockType);
+        }
+
     }
 
-    private static void runTrials(int n, boolean correctLock) throws InterruptedException {
+    private static void runTrials(int n, int lockType) throws InterruptedException {
 
         // Test tracking variables
         int totalViolations = 0;
@@ -33,9 +43,17 @@ public class TestFilterLock {
 
         // For each iteration of N
         for (int t = 0; t < TRIALS; t++) {
-            // create new filterlock to be tested, and run a trial
-            FilterLock lock = new FilterLock(n);
-            runOnce(lock, n);
+
+            // create new lock to be tested, and run a trial
+            // 0 indicates a FilterLock, 1 is a BakeryLock
+            if (lockType == 0){
+                FilterLock lock = new FilterLock(n);
+                runOnce(lock, n);
+            }
+            else{
+                BakeryLock lock = new BakeryLock(n);
+                runOnce(lock, n);
+            }
 
             // Get metrics back after test
             totalViolations += violations.get();

@@ -60,6 +60,11 @@ public class FilterLock implements Lock{
             level[i].set(lvl); // Announce intention to enter level lvl
             victim[lvl].set(i);  // always volunteer to be the victim
 
+            // Question 1.4, record when this thread arrived at level lvl
+            if (trackOvertaking){
+                arrive[i][visit[i]][lvl] = clock.getAndIncrement();
+            }
+
             // Now while there are others are at the same level, and the current thread
             // is the victim, wait
             while( otherThreadsPresent(i, lvl) && victim[lvl].get() == i){
