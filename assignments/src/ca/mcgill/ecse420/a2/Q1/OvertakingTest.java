@@ -7,7 +7,6 @@ public class OvertakingTest {
     private static final int N = 8;
     private static final int ITERATIONS = 300; // lock() calls per thread
     private static final int WORK = 3000; // size of the light load done inside the critical section
-    private static long sink = 0; // Stores the result of the light load so the compiler doesnt optimize
 
 
     // Runs n threads through the tracked lock and prints overtaking statistics from lock implementation
@@ -26,7 +25,6 @@ public class OvertakingTest {
                 for (int w = 0; w < WORK; w++) {
                     sum += w * k;
                 }
-                sink += sum;
             } finally {
                 lock.unlock();
             }
