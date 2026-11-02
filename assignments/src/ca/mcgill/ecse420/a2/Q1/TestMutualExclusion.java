@@ -34,6 +34,8 @@ public class TestMutualExclusion {
 
     }
 
+
+    // Function used to run trials for each different type of lock for mutual exclusion
     private static void runTrials(int n, int lockType) throws InterruptedException {
 
         // Test tracking variables
@@ -68,6 +70,7 @@ public class TestMutualExclusion {
             "n=%d  trials=%d  violations=%d  max threads in CS=%d  wrong counts=%d/%d  -> %s%n",
             n, TRIALS, totalViolations, worstPresense, badCounts, TRIALS, pass ? "PASS" : "FAIL");
     }
+
 
     // Starts n threads that each enter the critical section ITERATIONS times
     private static void runOnce(Lock lock, int n) throws InterruptedException {

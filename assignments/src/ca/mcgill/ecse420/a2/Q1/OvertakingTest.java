@@ -14,7 +14,32 @@ public class OvertakingTest {
 
         // Initialize thread tasks to try and join a critical section ITERATIONS times
         FilterLock lock = new FilterLock(N, true, ITERATIONS);
+        runThreads (lock);
 
+        // Display the results of the tests 
+        System.out.printf("Filter lock, n=%d, %d lock() calls per thread%n%n", N, ITERATIONS);
+        System.out.println("Level   visits overtaken   max times one visit overtaken");
+
+        for (int lvl = 1; lvl < N; lvl++) {
+            reportLevel(lock, lvl, lvl, "  " + lvl + "  ");
+        }
+
+        System.out.println("\nWhole lock (doorway = arrive at level 1, CS = pass level n-1):");
+        reportLevel(lock, 1, N - 1, " CS  ");
+
+        // Initialize the Bakery lock, and perform similar test as done with FilterLock
+        BakeryLock lock2 = new BakeryLock(N, true, ITERATIONS);
+        runThreads (lock2);
+
+        // Display the results of the tests 
+        System.out.println("Level   visits overtaken   max times one visit overtaken \n");
+        System.out.println("Whole lock (doorway = arrive at level 1, CS = pass level n-1):");
+        reportBakery(lock2);
+    }
+
+
+    // Runs N threads that each call lock() ITERATIONS times 
+    private static void runThreads(Lock lock) throws InterruptedException {
         Runnable task = () -> {
         for (int k = 0; k < ITERATIONS; k++) {
             lock.lock();
@@ -42,22 +67,12 @@ public class OvertakingTest {
         for (IdThread thread : threads) {
             thread.join();
         }
-
-        // Display the results of the tests 
-        System.out.printf("Filter lock, n=%d, %d lock() calls per thread%n%n", N, ITERATIONS);
-        System.out.println("Level   visits overtaken   max times one visit overtaken");
-
-        for (int lvl = 1; lvl < N; lvl++) {
-            reportLevel(lock, lvl, lvl, "  " + lvl + "  ");
-        }
-
-        System.out.println();
-        System.out.println("Whole lock (doorway = arrive at level 1, CS = pass level n-1):");
-        reportLevel(lock, 1, N - 1, " CS  ");
     }
+
 
     // Counts, for each visit, how many visits by other threads started at level
     // startLvl after it but finished level endLvl before it.
+    // This only works for FilterLock type as it calls functions specific to that calss
     private static void reportLevel(FilterLock lock, int startLvl, int endLvl, String label) {
 
         // initialize parameters for each run
@@ -93,5 +108,47 @@ public class OvertakingTest {
         // Print out results
         System.out.printf("%s | %5d / %d (%4.1f%%) | %d%n", label, overtakenVisits, total,
             100.0 * overtakenVisits / total, maxOvertakes);
+    }
+
+    // Counts, for each visit, how many visits by other threads started their doorway after it
+    // finished its doorway, but got past the wait loop before it
+    // This only works for Bakery Lock implementation, as it calls functions specific to this class
+    private static void reportBakery(BakeryLock lock) {
+        // statistic variables
+        int overtakenVisits = 0;
+        int maxOvertakes = 0;
+        int overlapReorders = 0;
+        int total = N * ITERATIONS;
+
+        // Iterate through object with overtaking enabled, and search for overtaking events
+        // Similar to what was done for previous lock
+        for (int a = 0; a < N; a++) {
+            for (int va = 0; va < ITERATIONS; va++) {
+                int count = 0;
+                for (int b = 0; b < N; b++) {
+                    if (b == a) {
+                        continue;
+                    }
+                    for (int vb = 0; vb < ITERATIONS; vb++) {
+                        // Check which passed first, and which actually finished first
+                        boolean passedFirst = lock.passTicket(b, vb) < lock.passTicket(a, va);
+                        if (passedFirst && lock.startTicket(b, vb) > lock.arrivalTicket(a, va)) {
+                            count++; // B started after A's doorway finished, yet went first
+                        } else if (passedFirst
+                            && lock.arrivalTicket(b, vb) > lock.arrivalTicket(a, va)) {
+                            overlapReorders++; // doorways overlapped, so either order is allowed
+                        }
+                    }
+                }
+                if (count > 0) {
+                    overtakenVisits++;
+                }
+                maxOvertakes = Math.max(maxOvertakes, count);
+            }
+        }
+        // printt out the results
+        System.out.printf("Bakery lock: %d / %d visits overtaken (%4.1f%%), max %d%n",
+            overtakenVisits, total, 100.0 * overtakenVisits / total, maxOvertakes);
+        System.out.printf("Reorders with overlapping doorways (allowed): %d%n", overlapReorders);
     }
 }
